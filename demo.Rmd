@@ -5,6 +5,7 @@ output:
   flexdashboard::flex_dashboard:
     orientation: columns
     vertical_layout: fill
+    theme: readable
 ---
 
 ```{r setup, include=FALSE}
@@ -17,12 +18,24 @@ theme_set(theme_minimal(base_size = 25) +
                   legend.position = "bottom"))
 ```
 
-Column {data-width=650}
------------------------------------------------------------------------
 
-### Scatterplot
+Description of data {.sidebar}
+=====================
 
-```{r, fig.width = 12, fig.cap = "Awesome caption"}
+This is a dashboard built with datasets that ship with [R](https://cran.r-project.org), including [**Fisher's iris dataset**](https://en.wikipedia.org/wiki/Iris_flower_data_set) and the [Moter Trends Cars dataset](http://www.sthda.com/english/wiki/r-built-in-data-sets). 
+
+
+# iris {data-icon="fa-seedling"}
+Here's the iris dataset I was telling you about in the sidebart.
+
+Column {.tabset data-width=650}
+------------------------
+
+### Scatterplot 
+
+This scatterplot took a lot of work (most of it picking which color the points would be).
+
+```{r, fig.width = 12}
 ggplot(iris, aes(Sepal.Length, Sepal.Width)) +
   geom_point(aes(color = Species), size = 2) +
   geom_smooth(color = "magenta",
@@ -30,13 +43,17 @@ ggplot(iris, aes(Sepal.Length, Sepal.Width)) +
   scale_colour_hp_d(option = "ravenclaw")
 ```
 
+> Awesome caption about a boring plot
 
 ### Table
+
+The table below is interactive. Feel free to click around!
 
 ```{r tbl1}
 reactable(iris)
 ```
 
+> This is the table
 
 Column {data-width=350}
 -----------------------------------------------------------------------
@@ -57,3 +74,46 @@ iris %>%
   labs(x = "",
        y = "Mean Sepal Length")
 ```
+
+
+# mtcars {data-icon="fa-car"}
+
+Column {data-width=500}
+-----------------------------------------------------------------------
+
+### Scatterplot
+```{r scatter-mtcars, fig.width = 7}
+ggplot(mtcars, aes(disp, mpg)) +
+  geom_point(aes(color = factor(carb))) +
+  geom_smooth() +
+  labs(x = "Engine Displacement",
+       y = "Miles Per Gallon") +
+  scale_colour_hp_d(name = "Carb", option = "slytherin")
+```
+
+### Table
+
+```{r mtcars-tbl}
+reactable(mtcars)
+```
+
+Column {data-width=500}
+-----------------------------------------------------------------------
+
+### Bar chart
+
+```{r barchart-mtcars, fig.height = 9}
+p <- mtcars %>% 
+  rownames_to_column("car") %>% 
+  group_by(cyl) %>% 
+  summarize(mean_mpg = mean(mpg)) %>% 
+  ggplot(aes(factor(cyl), mean_mpg)) +
+  geom_col(fill = "magenta") +
+  coord_flip() +
+  labs(x = "Cylinders",
+       y = "Mean miles per gallon")
+
+plotly::ggplotly(p)
+```
+
+# More stuff {data-icon="fa-500px"}
